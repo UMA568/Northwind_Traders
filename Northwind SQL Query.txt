@@ -1,0 +1,76 @@
+Que 1- How Many Current products count less then $20 ?
+ ans-select count(*) 
+     as ProductCount from products.
+     where unitprice>20 and Discontinued = 0; 
+Que 2 - Which Product is the most Expensive?
+ans-select ProductName,UnitPrice as expensive_price 
+    from products 
+     where unitprice in(select max(unitprice) from products)
+Que 3 - What is the Average unit price for our product ?
+ans- select productname,round(avg(unitprice),2)
+    as average_unit_price from products group by ProductName
+
+Que 4 - How many Products are above the average Unit price?
+ans-select 
+     productname, UnitPrice from products
+    where unitprice >(select avg(UnitPrice) from products)
+
+Que 5 How many Products cost between $ 15 and $ 25 (inclusive)?
+ans-select count(*)
+    from products where Unitprice between 15 and 20
+
+Que 6- what is the Order Value in $ of Open Orders?(Not Shipped yet)
+ans-select 
+   sum(Total_Amount) as Open_orders from Orders where
+   shippeddate is null;
+Que 8 How Many Orders are "single item" one Product Orederd?
+ans- select Count(*) 
+     as singel_item from (select Orderid from Orders 
+     group by orderid having count(*)=1)as single_item
+Que 9 Avereage sales per transaction OrederID for "Romero y tomillo
+ans -Select 
+avg(o.Total_Amount) as avgsalesperorders
+from orders o 
+join 
+     customers c on o.customerid=c.customerid
+where 
+c.companyname='Romero y Tomillo';
+  
+Que 10 - How many Customers first Purchase in Current year in 2022 ?
+Ans-select Count(*) as firstCustomer from (select CustomerID,min(orderDate)
+as FirstPurchase
+from orders group by CustomerID) as firstorders
+where year(FirstPurchase) = 2022;
+
+Que 11 - How Many Customers have Purchased only Queso Cabrales(per orderID)?
+Ans- select count(*) from(select o.orderid
+from orders o
+join
+products p on  o.productid = p.productid
+where p.ProductName = 'Queso Cabrales'
+group by o.orderid having count(*) = 1) as orderonly;
+
+Que-12 How Many product are out of stock ?
+ans- select count(*) as outofstock
+from products 
+where UnitsInStock = 0;
+Que-13 Which Vendor has the highest stock value ?
+ans- select s.ContactName, sum(p.UnitsInStock * p.QuantityPerUnit) 
+as TotalStockQuantiy from products p
+join 
+suppliers s on p.supplierID = s.supplierID 
+group by s.contactName 
+order by TotalStockQuantiy desc
+limit 1;
+
+Que- 14 How many Empolyees[%] are female?
+ans-select round(100*sum(case when Gender = 
+'Female' then 1 else 0 end) / count(*),2)
+as FemalePercentage from employees;
+
+Que- 15 How many  Employees are 60 years old or Over ? 
+ans- select count(*)  as sixtyearOlds 
+from employees
+where timestampdiff(Year,BirthDate,CURDATE()) = 60;
+
+

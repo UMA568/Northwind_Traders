@@ -1,0 +1,73 @@
+Que-1 Show all the orders of Customer HANNA MOOS ?
+Ans-EVALUATE
+GROUPBY(
+    SELECTCOLUMNS(
+        FILTER(CROSSJOIN(Orders, Customers), Orders[CustomerID] = Customers[CustomerID] && Customers[ContactName] = "Hanna Moos"),
+        "OrderID", Orders[OrderID],
+        "CustomerID", Orders[CustomerID]
+    ),
+    [OrderID],
+    "Count of Orders", COUNTX(CURRENTGROUP(), [OrderID])
+)
+Que-2 Show all the Products which Purchase Under 11011?
+Ans-FILTER(Orders, Orders[OrderID] = 11011)
+Que-3 Show Total amount of order 11011?
+SUMMARIZE(
+    FILTER(Orders, Orders[OrderID] = 11011),
+    "Total Amount", SUM(Orders[_Sales])
+)
+Que-4 Show all the orders between two date,include Customer & employee name also?
+Ans- EVALUATE
+CALCULATETABLE(
+    SELECTCOLUMNS(
+        Orders,
+        "OrderID", Orders[OrderID],
+        "OrderDate", Orders[OrderDate],
+        "CustomerName", RELATED(Customers[CustomerName]),
+        "EmployeeName", RELATED(Employees[EmployeeName])
+    ),
+    Orders[OrderDate] >= DATE(2024, 1, 1) && Orders[OrderDate] <= DATE(2024, 12, 31),
+    CROSSFILTER(Customers[CustomerID], Orders[CustomerID], BOTH)
+)
+
+Que-5 Count ordes of each country ?
+Ans- SUMMARIZE(Customers, Customers[Country], "orders count", COUNT(Orders[OrderID]))
+Que-6 Max Category sale in whole database ?
+ANS-TOPN(
+    1,
+    SUMMARIZE(
+        Categories[CategoryName],
+        "TotalSales", SUMX(Orders, Orders[Quantity] * Orders[UnitPrice])
+    ),
+    [TotalSales], DESC
+)
+Que-7 Total beverage sale in whole database?
+Ans-EVALUATE
+SUMMARIZECOLUMNS(
+    Categories[CategoryName],
+    FILTER(Categories, Categories[CategoryName] = "Beverages"),
+    "Total Sales", SUM(Orders[_Sales])
+)
+
+Que-8 How many employees got hired in 19194?
+ Ans-DEFINE
+   MEASURE Employees [employees hired in 1994]= 
+          COUNTROWS(FILTER(Employees,Employees[HireDate]>=1994-01-01 && Employees[HireDate]<=1994-12-31))
+Que-9 How many products need to be restocked?(based on restock levels)
+ANS-DEFINE
+MEASURE products[total product needs to restock]=
+        COUNTROWS(Filter(Products,Products[UnitsInStock]<Products[ReorderLevel] && Products[UnitsInStock]>0))
+Que-10 Show all the Ordes made by Laura ?
+Ans-EVALUATE
+SELECTCOLUMNS(
+    FILTER(
+        Orders,
+        RELATED(Employees[FirstName]) = "Laura"
+    ),
+    "OrderID", Orders[OrderID],
+    "OrderDate", Orders[OrderDate],
+    "Customer Name", RELATED(Customers[ContactName]),
+    "Employee Name", RELATED(Employees[FirstName])
+)
+
+
