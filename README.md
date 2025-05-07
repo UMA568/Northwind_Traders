@@ -45,10 +45,8 @@ The project simulates a real-world scenario where a data analyst answers busines
 
 ## 🔍 Northwind Queries
 
-<br View Dashboard File>
-View SQL Queries
-View Dax Quesries
-
-
+<a href="https://github.com/UMA568/Northwind_Traders/blob/main/Northwind%20Dax%20Query.txt">For View Dax Query Click Here</a><br>
+<a href="https://github.com/UMA568/Northwind_Traders/blob/main/Northwind%20SQL%20Query.txt">For View SQL Query Click Here</a><br>
+<a href="https://github.com/UMA568/Northwind_Traders/blob/main/Northwind.pbix">For View Dashboard Click Here</a>
 
 
